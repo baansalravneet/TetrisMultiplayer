@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"tetris/renderer"
+)
 
 func main() {
-	fmt.Println("Hello World!")
+	var screen renderer.Screen
+	screen.Init()
+	screen.Render()
 }

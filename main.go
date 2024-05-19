@@ -1,11 +1,9 @@
 package main
 
 import (
-	"tetris/renderer"
+	"tetris/gameloop"
 )
 
 func main() {
-	var screen renderer.Screen
-	screen.Init()
-	screen.Render()
+	gameloop.Loop()
 }

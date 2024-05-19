@@ -13,12 +13,11 @@ var BLANK = ' '
 var SCREEN_WIDTH = 10
 var SCREEN_HEIGHT = 10
 
-
 type Screen struct {
 	pixels [][]rune
 }
 
-func (s *Screen) Init() {
+func Init() *Screen {
 	pixels := make([][]rune, SCREEN_HEIGHT)
 	for i := range pixels {
 		pixels[i] = make([]rune, SCREEN_WIDTH)
@@ -38,11 +37,11 @@ func (s *Screen) Init() {
 		pixels[i][0] = VERTICAL
 		pixels[i][SCREEN_WIDTH-1] = VERTICAL
 	}
-	s.pixels = pixels
+	return &Screen{pixels}
 }
 
 func (s *Screen) Render() {
-	for _, line := range(s.pixels) {
+	for _, line := range s.pixels {
 		fmt.Println(string(line))
 	}
 }

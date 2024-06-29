@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	quitChan, s := screen.Start()
-	gameloop.Loop(quitChan, s)
+	inputChan, s := screen.Start()
+	gameloop.Loop(inputChan, s)
 }

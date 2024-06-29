@@ -1,8 +1,14 @@
 package gameloop
 
-import "tetris/renderer"
+import (
+	"tetris/screen"
+	"time"
+)
 
-func Loop() {
-	screen := renderer.Init()
-	screen.Render()
+func Loop(quitChan chan int, s *screen.Screen) {
+	for i := 0; i < 26; i++ {
+		s.Update(rune(i+'A'), 0, 0)
+		time.Sleep(200 * time.Millisecond)
+	}
+	quitChan <- 1
 }

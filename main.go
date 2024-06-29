@@ -2,8 +2,10 @@ package main
 
 import (
 	"tetris/gameloop"
+	"tetris/screen"
 )
 
 func main() {
-	gameloop.Loop()
+	quitChan, s := screen.Start()
+	gameloop.Loop(quitChan, s)
 }

@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"os/exec"
 	"tetris/component"
 	"time"
 )
@@ -15,9 +14,6 @@ type Screen struct {
 }
 
 func (s *Screen) render() {
-	for i := 0; i < len(s.pixels); i++ {
-		fmt.Printf("\033[F\033[K")
-	}
 	s.Clear()
 	for _, c := range s.components {
 		coords := (*c).Position()
@@ -36,9 +32,7 @@ func (s *Screen) render() {
 }
 
 func (s *Screen) Clear() {
-	cmd := exec.Command("clear")
-	cmd.Stdout = os.Stdout
-	cmd.Run()
+	fmt.Printf("\033[%dA", screenHeight+1)
 	for i := range s.pixels {
 		for j := range s.pixels[i] {
 			s.pixels[i][j] = ' '

@@ -1,9 +1,7 @@
 package screen
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"tetris/component"
 	"time"
 )
@@ -32,7 +30,7 @@ func (s *Screen) render() {
 }
 
 func (s *Screen) Clear() {
-	fmt.Printf("\033[%dA", screenHeight+1)
+	fmt.Printf("\033[%dA", screenHeight)
 	for i := range s.pixels {
 		for j := range s.pixels[i] {
 			s.pixels[i][j] = ' '
@@ -88,31 +86,15 @@ func (s *Screen) AddComponent(c component.Component) int {
 const screenHeight = 5
 const screenWidth = 5
 
-func Start() (chan rune, *Screen) {
+func Start() *Screen {
 	s := newScreen()
-	inputs := make(chan rune)
 	go func() {
 		ticker := time.NewTicker(100 * time.Millisecond)
 		for range ticker.C {
 			s.render()
 		}
 	}()
-	go func() {
-		reader := bufio.NewReader(os.Stdin)
-		for {
-			key := readKey(reader)
-			inputs <- key
-		}
-	}()
-	return inputs, &s
-}
-
-func readKey(reader *bufio.Reader) rune {
-	char, _, err := reader.ReadRune()
-	if err != nil {
-		fmt.Println("Error reading key: ", err)
-	}
-	return char
+	return &s
 }
 
 func newScreen() Screen {

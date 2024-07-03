@@ -3,9 +3,12 @@ package main
 import (
 	"tetris/gameloop"
 	"tetris/screen"
+	"tetris/input"
 )
 
 func main() {
-	inputChan, s := screen.Start()
+	s := screen.Start()
+	inputChan := input.Start()
 	gameloop.Loop(inputChan, s)
+	input.Stop()
 }

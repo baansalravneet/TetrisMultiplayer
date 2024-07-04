@@ -1,4 +1,4 @@
-package gameloop
+package loop
 
 import (
 	"fmt"
@@ -8,6 +8,7 @@ import (
 
 func Loop(inputChan chan rune, s *screen.Screen) {
 	dotId := s.AddComponent(component.NewDot())
+	s.AddComponent(component.NewBorder(0, 0, s.Height-1, s.Width-1))
 GAME_LOOP:
 	for {
 		input := <-inputChan

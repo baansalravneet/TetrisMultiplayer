@@ -9,6 +9,6 @@ import (
 func main() {
 	s := screen.Start()
 	inputChan := input.Start()
+	defer input.Stop()
 	loop.Loop(inputChan, s)
-	input.Stop()
 }

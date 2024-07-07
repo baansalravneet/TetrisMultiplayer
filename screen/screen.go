@@ -63,6 +63,15 @@ func (s *Screen) MoveComponent(id int, dir int) {
 	s.components[id] = &c
 }
 
+func (s *Screen) RotateComponent(id int) {
+	c := *s.components[id]
+	c.Rotate()
+	if !s.checkBoundsAndCollisions(c) {
+		c.RotateBack()
+	}
+	s.components[id] = &c
+}
+
 func (s *Screen) AddComponent(c component.Component) int {
 	if !s.checkBoundsAndCollisions(c) {
 		return -1

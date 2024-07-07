@@ -7,7 +7,7 @@ import (
 )
 
 func Loop(inputChan chan rune, s *screen.Screen) {
-	dotId := s.AddComponent(component.NewDot())
+	dotId := s.AddComponent(component.NewTee())
 	s.AddComponent(component.NewBorder(0, 0, s.Height-1, s.Width-1))
 GAME_LOOP:
 	for {
@@ -21,6 +21,8 @@ GAME_LOOP:
 			s.MoveComponent(dotId, 2)
 		case 'a':
 			s.MoveComponent(dotId, 3)
+		case 'j':
+			s.RotateComponent(dotId)
 		case 'x':
 			fmt.Println("Stopping game")
 			break GAME_LOOP

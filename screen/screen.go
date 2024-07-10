@@ -84,6 +84,7 @@ func (s *Screen) changeToRubble(c component.Component) {
 	rubble := s.components[component.RUBBLE_ID].(*component.Rubble)
 	rubble.AddPixels(component.AbsolutePixels(c))
 	delete(s.components, c.Id())
+	updateRubble(rubble)
 }
 
 func (s *Screen) DropComponent(id int) {
@@ -193,4 +194,25 @@ func (s *Screen) ActiveComponent() int {
 		}
 	}
 	return 0
+}
+
+func updateRubble(rubble *component.Rubble) {
+	pixels := rubble.GetPixels()
+	deleteLines := []int{}
+	for i := range pixels {
+		if lineFull(pixels[i]) {
+			deleteLines = append(deleteLines, i)
+		}
+	}
+	rubble.Delete(deleteLines)
+}
+
+func lineFull(pixels []bool) bool {
+	count := 0
+	for _, v := range pixels {
+		if v {
+			count++
+		}
+	}
+	return count == len(pixels)-2
 }

@@ -51,3 +51,20 @@ func (c *Rubble) AddPixels(pixels []Pixel) {
 func (c *Rubble) Id() int {
 	return c.id
 }
+
+func (c *Rubble) GetPixels() [][]bool {
+	return c.pixels
+}
+
+func (c *Rubble) Delete(lines []int) {
+	for i := len(lines) - 1; i >= 0; i-- {
+		lineNumber := lines[i]
+		for j := 0; j < len(c.pixels[i]); j++ {
+			current := lineNumber
+			for current > 0 {
+				c.pixels[current][j] = c.pixels[current-1][j]
+				current--
+			}
+		}
+	}
+}

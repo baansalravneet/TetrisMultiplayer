@@ -11,10 +11,12 @@ type Border struct {
 	left        int
 	bottom      int
 	right       int
+
+	id int
 }
 
 func NewBorder(top, left, bottom, right int) *Border {
-	return &Border{'╔', '╚', '╗', '╝', '═', '║', top, left, bottom, right}
+	return &Border{'╔', '╚', '╗', '╝', '═', '║', top, left, bottom, right, BORDER_ID}
 }
 
 func (c *Border) Position() (int, int) {
@@ -48,4 +50,8 @@ func (c *Border) Rotate() {
 
 func (c *Border) RotateBack() {
 	// you cannot rotate the border
+}
+
+func (c *Border) Id() int {
+	return c.id
 }

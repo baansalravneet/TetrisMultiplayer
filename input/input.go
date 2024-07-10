@@ -4,11 +4,11 @@ import (
 	"github.com/eiannone/keyboard"
 )
 
-func Start() chan rune {
+func Start(buffer int) chan rune {
 	if err := keyboard.Open(); err != nil {
 		panic(err)
 	}
-	inputChan := make(chan rune)
+	inputChan := make(chan rune, buffer)
 	go func() {
 		for {
 			char, _, _ := keyboard.GetKey()

@@ -1,31 +1,45 @@
 package loop
 
 import (
+	"errors"
 	"fmt"
 	"tetris/component"
 	"tetris/screen"
 )
 
 func Loop(inputChan chan rune, s *screen.Screen) {
-	dotId := s.AddComponent(component.NewTee())
-	s.AddComponent(component.NewBorder(0, 0, s.Height-1, s.Width-1))
 GAME_LOOP:
 	for {
-		input := <-inputChan
-		switch input {
-		case 'w':
-			s.MoveComponent(dotId, 0)
-		case 'd':
-			s.MoveComponent(dotId, 1)
-		case 's':
-			s.MoveComponent(dotId, 2)
-		case 'a':
-			s.MoveComponent(dotId, 3)
-		case 'j':
-			s.RotateComponent(dotId)
-		case 'x':
-			fmt.Println("Stopping game")
+		var cId int
+		if cId = s.ActiveComponent(); cId == 0 {
+			c := component.NewRandomComponent()
+			s.AddComponent(c)
+			cId = c.Id()
+		}
+		err := handleInputs(cId, inputChan, s)
+		if err != nil {
+			fmt.Println(err)
 			break GAME_LOOP
 		}
 	}
+}
+
+func handleInputs(cId int, inputChan chan rune, s *screen.Screen) error {
+	for i := 0; i < len(inputChan); i++ {
+		switch <-inputChan {
+		case 'w':
+			s.MoveComponent(cId, 0)
+		case 'd':
+			s.MoveComponent(cId, 1)
+		case 's':
+			s.MoveComponent(cId, 2)
+		case 'a':
+			s.MoveComponent(cId, 3)
+		case 'j':
+			s.RotateComponent(cId)
+		case 'x':
+			return errors.New("stoping game loop")
+		}
+	}
+	return nil
 }

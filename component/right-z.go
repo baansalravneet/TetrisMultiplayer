@@ -4,10 +4,12 @@ type RightZ struct {
 	x           int
 	y           int
 	orientation int
+
+	id int
 }
 
 func NewRightZ() *RightZ {
-	return &RightZ{1, 5, 0}
+	return &RightZ{1, 5, 0, RIGHT_Z_ID}
 }
 
 func (c *RightZ) Position() (int, int) {
@@ -42,4 +44,8 @@ func (c *RightZ) Rotate() {
 
 func (c *RightZ) RotateBack() {
 	c.orientation = 1 - c.orientation
+}
+
+func (c *RightZ) Id() int {
+	return c.id
 }

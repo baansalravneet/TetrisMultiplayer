@@ -2,6 +2,7 @@ package screen
 
 import (
 	"fmt"
+	"sync"
 	"tetris/component"
 	"time"
 )
@@ -10,19 +11,22 @@ type Screen struct {
 	Height     int
 	Width      int
 	pixels     [][]rune
-	components map[int]*component.Component
+	components map[int]component.Component
+	mu         sync.RWMutex
 }
 
 func (s *Screen) render() {
-	s.Clear()
+	s.clear()
+	s.mu.Lock()
 	for _, c := range s.components {
-		cx, cy := (*c).Position()
-		for _, pixel := range (*c).Pixels() {
+		cx, cy := c.Position()
+		for _, pixel := range c.Pixels() {
 			x := cx + pixel.X
 			y := cy + pixel.Y
-			s.Update(pixel.C, x, y)
+			s.update(pixel.C, x, y)
 		}
 	}
+	s.mu.Unlock()
 	for _, row := range (*s).pixels {
 		for _, v := range row {
 			fmt.Printf("%c", v)
@@ -31,7 +35,7 @@ func (s *Screen) render() {
 	}
 }
 
-func (s *Screen) Clear() {
+func (s *Screen) clear() {
 	fmt.Printf("\033[%dA", s.Height)
 	for i := range s.pixels {
 		for j := range s.pixels[i] {
@@ -40,13 +44,21 @@ func (s *Screen) Clear() {
 	}
 }
 
-func (s *Screen) Update(newChar rune, x, y int) {
+func (s *Screen) update(newChar rune, x, y int) {
 	(*s).pixels[x][y] = newChar
 }
 
-func (s *Screen) MoveComponent(id int, dir int) {
-	c := *s.components[id]
+func (s *Screen) MoveComponent(cId int, dir int) bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if _, ok := s.components[cId]; !ok {
+		return false
+	}
+
+	c := s.components[cId]
 	cx, cy := c.Position()
+
 	switch dir {
 	case 0:
 		c.NewPosition(cx-1, cy)
@@ -57,39 +69,55 @@ func (s *Screen) MoveComponent(id int, dir int) {
 	case 3:
 		c.NewPosition(cx, cy-1)
 	}
+
 	if !s.checkBoundsAndCollisions(c) {
 		c.NewPosition(cx, cy)
+		if dir == 2 {
+			// component collided with something while moving down
+			// change this to rubble
+			rubble := s.components[component.RUBBLE_ID].(*component.Rubble)
+			rubble.AddPixels(component.AbsolutePixels(c))
+			delete(s.components, cId)
+			return false
+		}
 	}
-	s.components[id] = &c
+	return true
 }
 
 func (s *Screen) RotateComponent(id int) {
-	c := *s.components[id]
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if _, ok := s.components[id]; !ok {
+		return
+	}
+	c := s.components[id]
 	c.Rotate()
 	if !s.checkBoundsAndCollisions(c) {
 		c.RotateBack()
 	}
-	s.components[id] = &c
 }
 
-func (s *Screen) AddComponent(c component.Component) int {
+func (s *Screen) AddComponent(c component.Component) bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	if !s.checkBoundsAndCollisions(c) {
-		return -1
+		return false
 	}
-	findFreeId := func() int {
-		m := (*s).components
-		i := 0
-		for i < len(m) {
-			if _, ok := m[i]; !ok {
-				return i
+	cId := c.Id()
+	s.components[cId] = c
+	if cId >= 2 && cId <= 7 {
+		go func() {
+			ticker := time.NewTicker(1 * time.Second)
+			for range ticker.C {
+				if !s.MoveComponent(cId, 2) {
+					ticker.Stop()
+				}
 			}
-			i++
-		}
-		return i
+		}()
 	}
-	id := findFreeId()
-	s.components[id] = &c
-	return id
+	return true
 }
 
 // two components will not collide if the pixels are the same
@@ -117,14 +145,16 @@ func Start() *Screen {
 			s.render()
 		}
 	}()
-	return &s
+	s.AddComponent(component.NewBorder(0, 0, s.Height-1, s.Width-1))
+	s.AddComponent(component.NewRubble(s.Height, s.Width))
+	return s
 }
 
-func newScreen() Screen {
-	s := Screen{
-		Height:     10,
+func newScreen() *Screen {
+	s := &Screen{
+		Height:     16,
 		Width:      10,
-		components: make(map[int]*component.Component),
+		components: make(map[int]component.Component),
 	}
 	s.pixels = make([][]rune, s.Height)
 	for i := range s.pixels {
@@ -134,4 +164,16 @@ func newScreen() Screen {
 		}
 	}
 	return s
+}
+
+func (s *Screen) ActiveComponent() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	for i := 2; i <= 7; i++ {
+		if _, ok := s.components[i]; ok {
+			return i
+		}
+	}
+	return 0
 }

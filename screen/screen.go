@@ -60,8 +60,6 @@ func (s *Screen) MoveComponent(cId int, dir int) bool {
 	cx, cy := c.Position()
 
 	switch dir {
-	case 0:
-		c.NewPosition(cx-1, cy)
 	case 1:
 		c.NewPosition(cx, cy+1)
 	case 2:
@@ -75,13 +73,32 @@ func (s *Screen) MoveComponent(cId int, dir int) bool {
 		if dir == 2 {
 			// component collided with something while moving down
 			// change this to rubble
-			rubble := s.components[component.RUBBLE_ID].(*component.Rubble)
-			rubble.AddPixels(component.AbsolutePixels(c))
-			delete(s.components, cId)
+			s.changeToRubble(c)
 			return false
 		}
 	}
 	return true
+}
+
+func (s *Screen) changeToRubble(c component.Component) {
+	rubble := s.components[component.RUBBLE_ID].(*component.Rubble)
+	rubble.AddPixels(component.AbsolutePixels(c))
+	delete(s.components, c.Id())
+}
+
+func (s *Screen) DropComponent(id int) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	c := s.components[id]
+	cx, cy := c.Position()
+
+	for s.checkBoundsAndCollisions(c) {
+		c.NewPosition(cx+1, cy)
+		cx++
+	}
+	c.NewPosition(cx-1, cy)
+	s.changeToRubble(c)
 }
 
 func (s *Screen) RotateComponent(id int) {

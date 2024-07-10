@@ -27,8 +27,6 @@ GAME_LOOP:
 func handleInputs(cId int, inputChan chan rune, s *screen.Screen) error {
 	for i := 0; i < len(inputChan); i++ {
 		switch <-inputChan {
-		case 'w':
-			s.MoveComponent(cId, 0)
 		case 'd':
 			s.MoveComponent(cId, 1)
 		case 's':
@@ -37,6 +35,8 @@ func handleInputs(cId int, inputChan chan rune, s *screen.Screen) error {
 			s.MoveComponent(cId, 3)
 		case 'j':
 			s.RotateComponent(cId)
+		case 'k':
+			s.DropComponent(cId)
 		case 'x':
 			return errors.New("stoping game loop")
 		}

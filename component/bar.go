@@ -4,10 +4,12 @@ type Bar struct {
 	x           int
 	y           int
 	orientation int
+
+	id int
 }
 
 func NewBar() *Bar {
-	return &Bar{1, 5, 0}
+	return &Bar{1, 5, 0, BAR_ID}
 }
 
 func (c *Bar) Position() (int, int) {
@@ -42,4 +44,8 @@ func (c *Bar) Rotate() {
 
 func (c *Bar) RotateBack() {
 	c.orientation = 1 - c.orientation
+}
+
+func (c *Bar) Id() int {
+	return c.id
 }

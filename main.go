@@ -7,8 +7,13 @@ import (
 )
 
 func main() {
+	// starting the rendering service
 	s := screen.Start()
-	inputChan := input.Start()
+
+	// initializing the buffered input channel
+	inputChan := input.Start(100)
 	defer input.Stop()
+	
+	// start the loop
 	loop.Loop(inputChan, s)
 }

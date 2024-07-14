@@ -17,7 +17,6 @@ type Screen struct {
 
 func (s *Screen) render() {
 	s.clear()
-	s.mu.Lock()
 	for _, c := range s.components {
 		cx, cy := c.Position()
 		for _, pixel := range c.Pixels() {
@@ -26,7 +25,6 @@ func (s *Screen) render() {
 			s.update(pixel.C, x, y)
 		}
 	}
-	s.mu.Unlock()
 	for _, row := range (*s).pixels {
 		for _, v := range row {
 			fmt.Printf("%c", v)

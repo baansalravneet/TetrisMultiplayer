@@ -57,14 +57,18 @@ func (c *Rubble) GetPixels() [][]bool {
 }
 
 func (c *Rubble) Delete(lines []int) {
-	for i := len(lines) - 1; i >= 0; i-- {
-		lineNumber := lines[i]
-		for j := 0; j < len(c.pixels[i]); j++ {
-			current := lineNumber
-			for current > 0 {
-				c.pixels[current][j] = c.pixels[current-1][j]
-				current--
-			}
+	if len(lines) == 0 {
+		return
+	}
+	i, j, count := len(lines)-1, len(c.pixels)-1, 0
+	for j-count >= 0 {
+		if i >= 0 && j-count == lines[i] {
+			count++
+			i--
+			copy(c.pixels[j], c.pixels[j-count])
+		} else {
+			copy(c.pixels[j], c.pixels[j-count])
+			j--
 		}
 	}
 }

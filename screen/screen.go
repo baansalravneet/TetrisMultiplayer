@@ -25,6 +25,14 @@ func (s *Screen) render() {
 			s.update(pixel.C, x, y)
 		}
 	}
+	if c, ok := s.components[component.GAME_OVER_ID]; ok {
+		cx, cy := c.Position()
+		for _, pixel := range c.Pixels() {
+			x := cx + pixel.X
+			y := cy + pixel.Y
+			s.update(pixel.C, x, y)
+		}
+	}
 	for _, row := range (*s).pixels {
 		for _, v := range row {
 			fmt.Printf("%c", v)
@@ -66,7 +74,7 @@ func (s *Screen) MoveComponent(cId int, dir int) bool {
 		c.NewPosition(cx, cy-1)
 	}
 
-	if !s.checkBoundsAndCollisions(c) {
+	if s.collided(c) {
 		c.NewPosition(cx, cy)
 		if dir == 2 {
 			// component collided with something while moving down
@@ -92,7 +100,7 @@ func (s *Screen) DropComponent(id int) {
 	c := s.components[id]
 	cx, cy := c.Position()
 
-	for s.checkBoundsAndCollisions(c) {
+	for !s.collided(c) {
 		c.NewPosition(cx+1, cy)
 		cx++
 	}
@@ -109,7 +117,7 @@ func (s *Screen) RotateComponent(id int) {
 	}
 	c := s.components[id]
 	c.Rotate()
-	if !s.checkBoundsAndCollisions(c) {
+	if s.collided(c) {
 		c.RotateBack()
 	}
 }
@@ -118,12 +126,17 @@ func (s *Screen) AddComponent(c component.Component) bool {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	if !s.checkBoundsAndCollisions(c) {
+	if c.Id() == component.GAME_OVER_ID {
+		s.components[c.Id()] = c
+		return true
+	}
+
+	if s.collided(c) {
 		return false
 	}
 	cId := c.Id()
 	s.components[cId] = c
-	if cId >= 2 && cId <= 7 {
+	if cId >= 2 && cId <= 8 {
 		go func() {
 			ticker := time.NewTicker(1 * time.Second)
 			for range ticker.C {
@@ -138,19 +151,36 @@ func (s *Screen) AddComponent(c component.Component) bool {
 
 // two components will not collide if the pixels are the same
 // possible merge
-func (s *Screen) checkBoundsAndCollisions(c component.Component) bool {
+func (s *Screen) collided(c component.Component) bool {
 	x, y := c.Position()
 	for _, pixel := range c.Pixels() {
 		if x+pixel.X < 0 || x+pixel.X >= s.Height ||
 			y+pixel.Y < 0 || y+pixel.Y >= s.Width {
-			return false
+			return true
 		}
 		if s.pixels[x+pixel.X][y+pixel.Y] != ' ' &&
 			s.pixels[x+pixel.X][y+pixel.Y] != pixel.C {
-			return false
+			return true
 		}
 	}
-	return true
+	return false
+}
+
+func (s *Screen) ActiveComponent() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	for i := 2; i <= 8; i++ {
+		if _, ok := s.components[i]; ok {
+			return i
+		}
+	}
+	return 0
+}
+
+func (s *Screen) GameOver() {
+	s.AddComponent(component.NewGameOver())
+	s.render()
 }
 
 func Start() *Screen {
@@ -180,18 +210,6 @@ func newScreen() *Screen {
 		}
 	}
 	return s
-}
-
-func (s *Screen) ActiveComponent() int {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	for i := 2; i <= 7; i++ {
-		if _, ok := s.components[i]; ok {
-			return i
-		}
-	}
-	return 0
 }
 
 func updateRubble(rubble *component.Rubble) {

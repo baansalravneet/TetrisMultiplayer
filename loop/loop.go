@@ -13,7 +13,11 @@ GAME_LOOP:
 		var cId int
 		if cId = s.ActiveComponent(); cId == 0 {
 			c := component.NewRandomComponent()
-			s.AddComponent(c)
+			placed := s.AddComponent(c)
+			if !placed {
+				s.GameOver()
+				break GAME_LOOP
+			}
 			cId = c.Id()
 		}
 		err := handleInputs(cId, inputChan, s)

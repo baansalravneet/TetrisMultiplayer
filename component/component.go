@@ -39,7 +39,7 @@ func AbsolutePixels(c Component) []Pixel {
 	return p
 }
 
-func NewRandomComponent() Component {
+func NewRandomPiece() Component {
 	c := rand.IntN(7)
 	switch c {
 	case 0:

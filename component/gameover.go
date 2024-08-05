@@ -9,13 +9,15 @@ func NewGameOver() *GameOver {
 }
 
 func (c *GameOver) Position() (int, int) {
-	return 8, 1
+	return 1, 1
 }
 
 func (c *GameOver) Pixels() []Pixel {
 	pixels := []Pixel{}
-	for i, c := range "GAMEOVER" {
-		pixels = append(pixels, Pixel{0, i, c})
+	for i := 0; i < 14; i++ {
+		for j, c := range "GAMEOVER" {
+			pixels = append(pixels, Pixel{i, j, c})
+		}
 	}
 	return pixels
 }

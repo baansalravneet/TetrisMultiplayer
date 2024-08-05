@@ -1,49 +1,26 @@
 package loop
 
 import (
-	"errors"
-	"fmt"
-	"tetris/component"
+	"tetris/gamestate"
 	"tetris/screen"
+	"time"
 )
 
-func Loop(inputChan chan rune, s *screen.Screen) {
-GAME_LOOP:
-	for {
-		var cId int
-		if cId = s.ActiveComponent(); cId == 0 {
-			c := component.NewRandomComponent()
-			placed := s.AddComponent(c)
-			if !placed {
+func Loop(inputChan chan rune, s *screen.Screen, state *gamestate.GameState) {
+	ticker := time.NewTicker(gamestate.DROP_SPEED)
+	for !state.Gameover && !state.GameExit {
+		if state.CurrentPiece == nil {
+			if !state.AddPiece() {
 				s.GameOver()
-				break GAME_LOOP
+				state.Gameover = true
 			}
-			cId = c.Id()
+			ticker.Reset(gamestate.DROP_SPEED)
 		}
-		err := handleInputs(cId, inputChan, s)
-		if err != nil {
-			fmt.Println(err)
-			break GAME_LOOP
-		}
-	}
-}
-
-func handleInputs(cId int, inputChan chan rune, s *screen.Screen) error {
-	for i := 0; i < len(inputChan); i++ {
-		switch <-inputChan {
-		case 'd':
-			s.MoveComponent(cId, 1)
-		case 's':
-			s.MoveComponent(cId, 2)
-		case 'a':
-			s.MoveComponent(cId, 3)
-		case 'j':
-			s.RotateComponent(cId)
-		case 'k':
-			s.DropComponent(cId)
-		case 'x':
-			return errors.New("stoping game loop")
+		select {
+		case input := <-inputChan:
+			state.HandleInput(input)
+		case <-ticker.C:
+			state.HandleDrop()
 		}
 	}
-	return nil
 }

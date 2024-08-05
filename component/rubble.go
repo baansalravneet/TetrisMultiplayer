@@ -72,3 +72,7 @@ func (c *Rubble) Delete(lines []int) {
 		}
 	}
 }
+
+func (c *Rubble) Contains(x, y int) bool {
+	return c.pixels[x][y]
+}

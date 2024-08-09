@@ -2,8 +2,6 @@ package component
 
 type Rubble struct {
 	pixels [][]bool
-
-	id int
 }
 
 func NewRubble(height, width int) *Rubble {
@@ -11,7 +9,7 @@ func NewRubble(height, width int) *Rubble {
 	for i := range pixels {
 		pixels[i] = make([]bool, width)
 	}
-	return &Rubble{pixels, RUBBLE_ID}
+	return &Rubble{pixels}
 }
 
 func (c *Rubble) Position() (int, int) {
@@ -46,10 +44,6 @@ func (c *Rubble) AddPixels(pixels []Pixel) {
 	for _, p := range pixels {
 		c.pixels[p.X][p.Y] = true
 	}
-}
-
-func (c *Rubble) Id() int {
-	return c.id
 }
 
 func (c *Rubble) GetPixels() [][]bool {

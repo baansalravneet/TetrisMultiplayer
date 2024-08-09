@@ -4,12 +4,10 @@ type Tee struct {
 	x           int
 	y           int
 	orientation int
-
-	id int
 }
 
 func NewTee() *Tee {
-	return &Tee{1, 5, 0, TEE_ID}
+	return &Tee{1, 5, 0}
 }
 
 func (c *Tee) Position() (int, int) {
@@ -58,8 +56,4 @@ func (c *Tee) Rotate() {
 
 func (c *Tee) RotateBack() {
 	c.orientation = (c.orientation - 1 + 4) % 4
-}
-
-func (c *Tee) Id() int {
-	return c.id
 }

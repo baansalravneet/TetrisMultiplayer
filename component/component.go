@@ -2,19 +2,6 @@ package component
 
 import "math/rand/v2"
 
-const BORDER_ID = 0
-const RUBBLE_ID = 1
-
-const BAR_ID = 2
-const BOX_ID = 3
-const LEFT_L_ID = 4
-const LEFT_Z_ID = 5
-const RIGHT_L_ID = 6
-const RIGHT_Z_ID = 7
-const TEE_ID = 8
-
-const GAME_OVER_ID = 9
-
 type Pixel struct {
 	X int
 	Y int
@@ -27,7 +14,6 @@ type Component interface {
 	NewPosition(int, int)
 	Rotate()
 	RotateBack()
-	Id() int
 }
 
 func AbsolutePixels(c Component) []Pixel {

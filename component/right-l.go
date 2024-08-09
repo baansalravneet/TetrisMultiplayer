@@ -4,12 +4,10 @@ type RightL struct {
 	x           int
 	y           int
 	orientation int
-
-	id int
 }
 
 func NewRightL() *RightL {
-	return &RightL{1, 5, 0, RIGHT_L_ID}
+	return &RightL{1, 5, 0}
 }
 
 func (c *RightL) Position() (int, int) {
@@ -58,8 +56,4 @@ func (c *RightL) Rotate() {
 
 func (c *RightL) RotateBack() {
 	c.orientation = (c.orientation - 1 + 4) % 4
-}
-
-func (c *RightL) Id() int {
-	return c.id
 }

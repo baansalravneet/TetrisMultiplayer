@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-const SCREEN_HEIGHT int = 16
-const SCREEN_WIDTH int = 10
+const BOARD_HEIGHT int = 22
+const BOARD_WIDTH int = 12
 const DROP_SPEED time.Duration = 1000 * time.Millisecond
 
 type GameState struct {
@@ -21,7 +21,7 @@ type GameState struct {
 func Init() *GameState {
 	return &GameState{
 		NextPiece: component.NewRandomPiece(),
-		Rubble:    component.NewRubble(SCREEN_HEIGHT, SCREEN_WIDTH),
+		Rubble:    component.NewRubble(BOARD_HEIGHT, BOARD_WIDTH),
 	}
 }
 
@@ -100,8 +100,8 @@ func (s *GameState) collided() bool {
 	c := s.CurrentPiece
 	x, y := c.Position()
 	for _, pixel := range c.Pixels() {
-		if x+pixel.X < 1 || x+pixel.X >= SCREEN_HEIGHT-1 ||
-			y+pixel.Y < 1 || y+pixel.Y >= SCREEN_WIDTH-1 {
+		if x+pixel.X < 1 || x+pixel.X >= BOARD_HEIGHT-1 ||
+			y+pixel.Y < 1 || y+pixel.Y >= BOARD_WIDTH-1 {
 			return true
 		}
 		if s.Rubble.Contains(x+pixel.X, y+pixel.Y) {

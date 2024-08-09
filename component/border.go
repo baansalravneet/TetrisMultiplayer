@@ -7,35 +7,33 @@ type Border struct {
 	bottomRight rune
 	horizontal  rune
 	vertical    rune
-	top         int
-	left        int
-	bottom      int
-	right       int
-
-	id int
+	Top         int
+	Left        int
+	Bottom      int
+	Right       int
 }
 
-func NewBorder(top, left, bottom, right int) *Border {
-	return &Border{'╔', '╚', '╗', '╝', '═', '║', top, left, bottom, right, BORDER_ID}
+func NewBorder(top, left, bottom, right int) *Border { // these are absolute positions
+	return &Border{'╔', '╚', '╗', '╝', '═', '║', top, left, bottom, right}
 }
 
 func (c *Border) Position() (int, int) {
-	return 0, 0
+	return c.Top, c.Left
 }
 
 func (c *Border) Pixels() []Pixel {
 	pixels := []Pixel{}
-	pixels = append(pixels, Pixel{c.top, c.left, c.topLeft})
-	pixels = append(pixels, Pixel{c.top, c.right, c.topRight})
-	pixels = append(pixels, Pixel{c.bottom, c.left, c.bottomLeft})
-	pixels = append(pixels, Pixel{c.bottom, c.right, c.bottomRight})
-	for i := c.top + 1; i < c.bottom; i++ {
-		pixels = append(pixels, Pixel{i, c.left, c.vertical})
-		pixels = append(pixels, Pixel{i, c.right, c.vertical})
+	pixels = append(pixels, Pixel{0, 0, c.topLeft})
+	pixels = append(pixels, Pixel{0, c.Right - c.Left, c.topRight})
+	pixels = append(pixels, Pixel{c.Bottom - c.Top, 0, c.bottomLeft})
+	pixels = append(pixels, Pixel{c.Bottom - c.Top, c.Right - c.Left, c.bottomRight})
+	for i := 1; i < c.Bottom-c.Top; i++ {
+		pixels = append(pixels, Pixel{i, 0, c.vertical})
+		pixels = append(pixels, Pixel{i, c.Right - c.Left, c.vertical})
 	}
-	for j := c.left + 1; j < c.right; j++ {
-		pixels = append(pixels, Pixel{c.top, j, c.horizontal})
-		pixels = append(pixels, Pixel{c.bottom, j, c.horizontal})
+	for j := 1; j < c.Right-c.Left; j++ {
+		pixels = append(pixels, Pixel{0, j, c.horizontal})
+		pixels = append(pixels, Pixel{c.Bottom - c.Top, j, c.horizontal})
 	}
 	return pixels
 }
@@ -50,8 +48,4 @@ func (c *Border) Rotate() {
 
 func (c *Border) RotateBack() {
 	// you cannot rotate the border
-}
-
-func (c *Border) Id() int {
-	return c.id
 }

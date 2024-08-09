@@ -3,12 +3,10 @@ package component
 type Box struct {
 	x int
 	y int
-
-	id int
 }
 
 func NewBox() *Box {
-	return &Box{1, 5, BOX_ID}
+	return &Box{1, 5}
 }
 
 func (c *Box) Position() (int, int) {
@@ -35,8 +33,4 @@ func (c *Box) Rotate() {
 
 func (c *Box) RotateBack() {
 	// redundant
-}
-
-func (c *Box) Id() int {
-	return c.id
 }

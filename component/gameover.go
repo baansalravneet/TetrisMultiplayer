@@ -1,11 +1,9 @@
 package component
 
-type GameOver struct {
-	id int
-}
+type GameOver struct {}
 
 func NewGameOver() *GameOver {
-	return &GameOver{GAME_OVER_ID}
+	return &GameOver{}
 }
 
 func (c *GameOver) Position() (int, int) {
@@ -14,8 +12,8 @@ func (c *GameOver) Position() (int, int) {
 
 func (c *GameOver) Pixels() []Pixel {
 	pixels := []Pixel{}
-	for i := 0; i < 14; i++ {
-		for j, c := range "GAMEOVER" {
+	for i := 0; i < 20; i++ {
+		for j, c := range " GAMEOVER " {
 			pixels = append(pixels, Pixel{i, j, c})
 		}
 	}
@@ -32,8 +30,4 @@ func (c *GameOver) Rotate() {
 
 func (c *GameOver) RotateBack() {
 	// you cannot rotate the border
-}
-
-func (c *GameOver) Id() int {
-	return c.id
 }

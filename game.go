@@ -9,7 +9,7 @@ import (
 
 func main() {
 	state := gamestate.Init()
-	s := screen.Start(state)
+	s := screen.Start()
 	inputChan := input.Start(100)
 	defer input.Stop()
 	loop.Loop(inputChan, s, state)

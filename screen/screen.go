@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"tetris/component"
 	"tetris/gamestate"
-	"time"
 )
 
 const screenHeight = 22
@@ -12,31 +11,30 @@ const screenWidth = 20
 
 type Screen struct {
 	pixels   [][]rune
-	state    *gamestate.GameState
 	border   component.Component
 	npw      component.Component
 	nextText component.Component
 }
 
-func (s *Screen) render() {
+func (s *Screen) Update(state gamestate.GameState) {
 	s.clear()
-	s.updateScreen()
+	s.updateScreen(state)
 	s.print()
 }
 
-func (s *Screen) updateScreen() {
-	cx, cy := s.state.CurrentPiece.Position()
-	for _, pixel := range s.state.CurrentPiece.Pixels() {
+func (s *Screen) updateScreen(state gamestate.GameState) {
+	cx, cy := state.CurrentPiece.Position()
+	for _, pixel := range state.CurrentPiece.Pixels() {
 		s.update(pixel.C, cx+pixel.X, cy+pixel.Y)
 	}
 	cx, cy = 3, 16
-	for _, pixel := range s.state.NextPiece.Pixels() {
+	for _, pixel := range state.NextPiece.Pixels() {
 		s.update(pixel.C, cx+pixel.X, cy+pixel.Y)
 	}
-	for _, pixel := range s.state.Rubble.Pixels() {
+	for _, pixel := range state.Rubble.Pixels() {
 		s.update(pixel.C, pixel.X, pixel.Y)
 	}
-	if s.state.Gameover {
+	if state.Gameover {
 		gameoverComponent := component.NewGameOver()
 		cx, cy = gameoverComponent.Position()
 		for _, pixel := range gameoverComponent.Pixels() {
@@ -78,28 +76,21 @@ func (s *Screen) update(newChar rune, x, y int) {
 	(*s).pixels[x][y] = newChar
 }
 
-func (s *Screen) GameOver() {
-	s.render()
+func (s *Screen) GameOver(state gamestate.GameState) {
+	s.Update(state)
 }
 
-func Start(state *gamestate.GameState) *Screen {
+func Start() Screen {
 	s := newScreen()
-	s.state = state
 	s.border = component.NewBorder(0, 0, gamestate.BOARD_HEIGHT-1, gamestate.BOARD_WIDTH-1)
 	s.npw = component.NewBorder(2, 14, 5, 19)
 	s.nextText = component.NewText("NEXT", 1, 15)
 	s.addStaticComponents()
-	go func() {
-		ticker := time.NewTicker(100 * time.Millisecond)
-		for range ticker.C {
-			s.render()
-		}
-	}()
 	return s
 }
 
-func newScreen() *Screen {
-	s := &Screen{}
+func newScreen() Screen {
+	s := Screen{}
 	s.pixels = make([][]rune, screenHeight)
 	for i := range s.pixels {
 		s.pixels[i] = make([]rune, screenWidth)

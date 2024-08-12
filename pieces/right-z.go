@@ -3,21 +3,22 @@ package pieces
 import "tetris/component"
 
 type RightZ struct {
-	x           int
-	y           int
-	orientation int
+	Type        int
+	X           int
+	Y           int
+	Orientation int
 }
 
 func NewRightZ() *RightZ {
-	return &RightZ{1, 5, 0}
+	return &RightZ{RIGHT_Z, 1, 5, 0}
 }
 
 func (c *RightZ) Position() (int, int) {
-	return c.x, c.y
+	return c.X, c.Y
 }
 
 func (c *RightZ) Pixels() []component.Pixel {
-	if c.orientation == 0 {
+	if c.Orientation == 0 {
 		return []component.Pixel{
 			{X: 0, Y: -1, C: 'O'},
 			{X: 0, Y: 0, C: 'O'},
@@ -34,14 +35,14 @@ func (c *RightZ) Pixels() []component.Pixel {
 }
 
 func (c *RightZ) NewPosition(x, y int) {
-	c.x = x
-	c.y = y
+	c.X = x
+	c.Y = y
 }
 
 func (c *RightZ) Rotate() {
-	c.orientation = 1 - c.orientation
+	c.Orientation = 1 - c.Orientation
 }
 
 func (c *RightZ) RotateBack() {
-	c.orientation = 1 - c.orientation
+	c.Orientation = 1 - c.Orientation
 }

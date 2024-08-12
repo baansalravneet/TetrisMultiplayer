@@ -3,21 +3,22 @@ package pieces
 import "tetris/component"
 
 type Bar struct {
-	x           int
-	y           int
-	orientation int
+	Type        int
+	X           int
+	Y           int
+	Orientation int
 }
 
 func NewBar() *Bar {
-	return &Bar{1, 5, 0}
+	return &Bar{BAR, 1, 5, 0}
 }
 
 func (c *Bar) Position() (int, int) {
-	return c.x, c.y
+	return c.X, c.Y
 }
 
 func (c *Bar) Pixels() []component.Pixel {
-	if c.orientation == 0 {
+	if c.Orientation == 0 {
 		return []component.Pixel{
 			{X: 0, Y: -1, C: 'O'},
 			{X: 0, Y: 0, C: 'O'},
@@ -34,14 +35,14 @@ func (c *Bar) Pixels() []component.Pixel {
 }
 
 func (c *Bar) NewPosition(x, y int) {
-	c.x = x
-	c.y = y
+	c.X = x
+	c.Y = y
 }
 
 func (c *Bar) Rotate() {
-	c.orientation = 1 - c.orientation
+	c.Orientation = 1 - c.Orientation
 }
 
 func (c *Bar) RotateBack() {
-	c.orientation = 1 - c.orientation
+	c.Orientation = 1 - c.Orientation
 }

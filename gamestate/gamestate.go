@@ -10,13 +10,14 @@ import (
 const BOARD_HEIGHT int = 22
 const BOARD_WIDTH int = 12
 const DROP_SPEED time.Duration = 1000 * time.Millisecond
+const SCREEN_REFRESH_RATE time.Duration = 50 * time.Millisecond
 
 type GameState struct {
 	Gameover     bool
 	GameExit     bool
 	CurrentPiece pieces.Piece
 	NextPiece    pieces.Piece
-	Rubble       *component.Rubble
+	Rubble       component.Rubble
 }
 
 func Init() *GameState {

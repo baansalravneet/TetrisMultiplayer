@@ -3,35 +3,36 @@ package pieces
 import "tetris/component"
 
 type RightL struct {
-	x           int
-	y           int
-	orientation int
+	Type        int
+	X           int
+	Y           int
+	Orientation int
 }
 
 func NewRightL() *RightL {
-	return &RightL{1, 5, 0}
+	return &RightL{RIGHT_L, 1, 5, 0}
 }
 
 func (c *RightL) Position() (int, int) {
-	return c.x, c.y
+	return c.X, c.Y
 }
 
 func (c *RightL) Pixels() []component.Pixel {
-	if c.orientation == 0 {
+	if c.Orientation == 0 {
 		return []component.Pixel{
 			{X: 0, Y: -1, C: 'O'},
 			{X: 0, Y: 0, C: 'O'},
 			{X: 0, Y: 1, C: 'O'},
 			{X: 1, Y: -1, C: 'O'},
 		}
-	} else if c.orientation == 1 {
+	} else if c.Orientation == 1 {
 		return []component.Pixel{
 			{X: -1, Y: 0, C: 'O'},
 			{X: 0, Y: 0, C: 'O'},
 			{X: 1, Y: 0, C: 'O'},
 			{X: -1, Y: -1, C: 'O'},
 		}
-	} else if c.orientation == 2 {
+	} else if c.Orientation == 2 {
 		return []component.Pixel{
 			{X: -1, Y: 1, C: 'O'},
 			{X: 0, Y: -1, C: 'O'},
@@ -48,14 +49,14 @@ func (c *RightL) Pixels() []component.Pixel {
 }
 
 func (c *RightL) NewPosition(x, y int) {
-	c.x = x
-	c.y = y
+	c.X = x
+	c.Y = y
 }
 
 func (c *RightL) Rotate() {
-	c.orientation = (c.orientation + 1) % 4
+	c.Orientation = (c.Orientation + 1) % 4
 }
 
 func (c *RightL) RotateBack() {
-	c.orientation = (c.orientation - 1 + 4) % 4
+	c.Orientation = (c.Orientation - 1 + 4) % 4
 }

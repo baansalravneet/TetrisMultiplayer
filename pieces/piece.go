@@ -5,6 +5,16 @@ import (
 	"tetris/component"
 )
 
+const (
+	BAR     = iota
+	BOX     = iota
+	LEFT_L  = iota
+	LEFT_Z  = iota
+	RIGHT_L = iota
+	RIGHT_Z = iota
+	TEE     = iota
+)
+
 type Piece interface {
 	Position() (int, int)
 	Pixels() []component.Pixel

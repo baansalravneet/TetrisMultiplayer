@@ -1,4 +1,6 @@
-package component
+package pieces
+
+import "tetris/component"
 
 type Box struct {
 	x int
@@ -13,12 +15,12 @@ func (c *Box) Position() (int, int) {
 	return c.x, c.y
 }
 
-func (c *Box) Pixels() []Pixel {
-	return []Pixel{
-		{0, 0, 'O'},
-		{1, 0, 'O'},
-		{0, 1, 'O'},
-		{1, 1, 'O'},
+func (c *Box) Pixels() []component.Pixel {
+	return []component.Pixel{
+		{X: 0, Y: 0, C: 'O'},
+		{X: 1, Y: 0, C: 'O'},
+		{X: 0, Y: 1, C: 'O'},
+		{X: 1, Y: 1, C: 'O'},
 	}
 }
 

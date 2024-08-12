@@ -21,15 +21,3 @@ func (c *Text) Pixels() []Pixel {
 	}
 	return pixels
 }
-
-func (c *Text) NewPosition(x, y int) {
-	// you cannot change the position of a border
-}
-
-func (c *Text) Rotate() {
-	// you cannot rotate the border
-}
-
-func (c *Text) RotateBack() {
-	// you cannot rotate the border
-}

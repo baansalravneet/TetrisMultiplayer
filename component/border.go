@@ -37,15 +37,3 @@ func (c *Border) Pixels() []Pixel {
 	}
 	return pixels
 }
-
-func (c *Border) NewPosition(x, y int) {
-	// you cannot change the position of a border
-}
-
-func (c *Border) Rotate() {
-	// you cannot rotate the border
-}
-
-func (c *Border) RotateBack() {
-	// you cannot rotate the border
-}

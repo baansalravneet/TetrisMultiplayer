@@ -28,18 +28,6 @@ func (c *Rubble) Pixels() []Pixel {
 	return p
 }
 
-func (c *Rubble) NewPosition(x, y int) {
-	// doesn't move
-}
-
-func (c *Rubble) Rotate() {
-	// redundant
-}
-
-func (c *Rubble) RotateBack() {
-	// redundant
-}
-
 func (c *Rubble) AddPixels(pixels []Pixel) {
 	for _, p := range pixels {
 		c.pixels[p.X][p.Y] = true

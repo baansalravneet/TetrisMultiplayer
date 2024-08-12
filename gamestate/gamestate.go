@@ -3,6 +3,7 @@ package gamestate
 import (
 	"fmt"
 	"tetris/component"
+	"tetris/pieces"
 	"time"
 )
 
@@ -13,47 +14,47 @@ const DROP_SPEED time.Duration = 1000 * time.Millisecond
 type GameState struct {
 	Gameover     bool
 	GameExit     bool
-	CurrentPiece component.Component
-	NextPiece    component.Component
+	CurrentPiece pieces.Piece
+	NextPiece    pieces.Piece
 	Rubble       *component.Rubble
 }
 
 func Init() *GameState {
 	return &GameState{
-		NextPiece: component.NewRandomPiece(),
+		NextPiece: pieces.NewRandomPiece(),
 		Rubble:    component.NewRubble(BOARD_HEIGHT, BOARD_WIDTH),
 	}
 }
 
 func (s *GameState) AddPiece() bool {
 	s.CurrentPiece = s.NextPiece
-	s.NextPiece = component.NewRandomPiece()
+	s.NextPiece = pieces.NewRandomPiece()
 	return !s.collided()
 }
 
 func (s *GameState) HandleDrop() {
-	s.moveComponent(2)
+	s.movePiece(2)
 }
 
 func (s *GameState) HandleInput(input rune) {
 	switch input {
 	case 'd':
-		s.moveComponent(1)
+		s.movePiece(1)
 	case 's':
-		s.moveComponent(2)
+		s.movePiece(2)
 	case 'a':
-		s.moveComponent(3)
+		s.movePiece(3)
 	case 'j':
-		s.rotateComponent()
+		s.rotatePiece()
 	case 'k':
-		s.dropComponent()
+		s.dropPiece()
 	case 'x':
 		fmt.Println("Exiting game...")
 		s.GameExit = true
 	}
 }
 
-func (s *GameState) dropComponent() {
+func (s *GameState) dropPiece() {
 	cx, cy := s.CurrentPiece.Position()
 	for !s.collided() {
 		s.CurrentPiece.NewPosition(cx+1, cy)
@@ -63,7 +64,7 @@ func (s *GameState) dropComponent() {
 	s.changeToRubble()
 }
 
-func (s *GameState) rotateComponent() {
+func (s *GameState) rotatePiece() {
 	c := s.CurrentPiece
 	c.Rotate()
 	if s.collided() {
@@ -71,7 +72,7 @@ func (s *GameState) rotateComponent() {
 	}
 }
 
-func (s *GameState) moveComponent(dir int) bool {
+func (s *GameState) movePiece(dir int) bool {
 	c := s.CurrentPiece
 	cx, cy := c.Position()
 

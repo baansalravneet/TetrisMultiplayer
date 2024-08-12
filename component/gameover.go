@@ -19,15 +19,3 @@ func (c *GameOver) Pixels() []Pixel {
 	}
 	return pixels
 }
-
-func (c *GameOver) NewPosition(x, y int) {
-	// you cannot change the position of a border
-}
-
-func (c *GameOver) Rotate() {
-	// you cannot rotate the border
-}
-
-func (c *GameOver) RotateBack() {
-	// you cannot rotate the border
-}

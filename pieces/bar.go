@@ -1,4 +1,6 @@
-package component
+package pieces
+
+import "tetris/component"
 
 type Bar struct {
 	x           int
@@ -14,20 +16,20 @@ func (c *Bar) Position() (int, int) {
 	return c.x, c.y
 }
 
-func (c *Bar) Pixels() []Pixel {
+func (c *Bar) Pixels() []component.Pixel {
 	if c.orientation == 0 {
-		return []Pixel{
-			{0, -1, 'O'},
-			{0, 0, 'O'},
-			{0, 1, 'O'},
-			{0, 2, 'O'},
+		return []component.Pixel{
+			{X: 0, Y: -1, C: 'O'},
+			{X: 0, Y: 0, C: 'O'},
+			{X: 0, Y: 1, C: 'O'},
+			{X: 0, Y: 2, C: 'O'},
 		}
 	}
-	return []Pixel{
-		{-1, 0, 'O'},
-		{0, 0, 'O'},
-		{1, 0, 'O'},
-		{2, 0, 'O'},
+	return []component.Pixel{
+		{X: -1, Y: 0, C: 'O'},
+		{X: 0, Y: 0, C: 'O'},
+		{X: 1, Y: 0, C: 'O'},
+		{X: 2, Y: 0, C: 'O'},
 	}
 }
 

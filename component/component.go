@@ -1,7 +1,5 @@
 package component
 
-import "math/rand/v2"
-
 type Pixel struct {
 	X int
 	Y int
@@ -11,9 +9,6 @@ type Pixel struct {
 type Component interface {
 	Position() (int, int)
 	Pixels() []Pixel
-	NewPosition(int, int)
-	Rotate()
-	RotateBack()
 }
 
 func AbsolutePixels(c Component) []Pixel {
@@ -23,24 +18,4 @@ func AbsolutePixels(c Component) []Pixel {
 		p = append(p, Pixel{x + i.X, y + i.Y, i.C})
 	}
 	return p
-}
-
-func NewRandomPiece() Component {
-	c := rand.IntN(7)
-	switch c {
-	case 0:
-		return NewBar()
-	case 1:
-		return NewBox()
-	case 2:
-		return NewLeftL()
-	case 3:
-		return NewLeftZ()
-	case 4:
-		return NewRightL()
-	case 5:
-		return NewRightZ()
-	default:
-		return NewTee()
-	}
 }

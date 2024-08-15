@@ -3,14 +3,13 @@ package pieces
 import "tetris/component"
 
 type Tee struct {
-	Type        int
 	X           int
 	Y           int
 	Orientation int
 }
 
 func NewTee() *Tee {
-	return &Tee{TEE, 1, 5, 0}
+	return &Tee{1, 5, 0}
 }
 
 func (c *Tee) Position() (int, int) {

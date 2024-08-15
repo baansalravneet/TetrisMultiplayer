@@ -3,14 +3,13 @@ package pieces
 import "tetris/component"
 
 type LeftZ struct {
-	Type        int
 	X           int
 	Y           int
 	Orientation int
 }
 
 func NewLeftZ() *LeftZ {
-	return &LeftZ{LEFT_Z, 1, 5, 0}
+	return &LeftZ{1, 5, 0}
 }
 
 func (c *LeftZ) Position() (int, int) {

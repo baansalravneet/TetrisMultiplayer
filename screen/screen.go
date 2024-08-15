@@ -80,7 +80,7 @@ func (s *Screen) GameOver(state gamestate.GameState) {
 	s.Update(state)
 }
 
-func Start() Screen {
+func Init() Screen {
 	s := newScreen()
 	s.border = component.NewBorder(0, 0, gamestate.BOARD_HEIGHT-1, gamestate.BOARD_WIDTH-1)
 	s.npw = component.NewBorder(2, 14, 5, 19)

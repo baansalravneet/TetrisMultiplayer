@@ -3,14 +3,13 @@ package pieces
 import "tetris/component"
 
 type Bar struct {
-	Type        int
 	X           int
 	Y           int
 	Orientation int
 }
 
 func NewBar() *Bar {
-	return &Bar{BAR, 1, 5, 0}
+	return &Bar{1, 5, 0}
 }
 
 func (c *Bar) Position() (int, int) {

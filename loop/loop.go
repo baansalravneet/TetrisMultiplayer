@@ -1,21 +1,20 @@
 package loop
 
 import (
+	"encoding/json"
 	"tetris/gamestate"
-	"tetris/screen"
+	"tetris/server"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
 
-func Loop(inputChan chan rune, s screen.Screen, state *gamestate.GameState) {
-	// connect player 1 - WIP
-	// connect player 2 - WIP
-	// start game
+func Loop(state *gamestate.GameState, inputChan chan rune, gs *server.GameServer) {
 	gameTicker := time.NewTicker(gamestate.DROP_SPEED)
-	screenTicker := time.NewTicker(gamestate.SCREEN_REFRESH_RATE)
+	connectionTicker := time.NewTicker(100 * time.Millisecond) // TODO: remove this and send state for every state update
 	for !state.Gameover && !state.GameExit {
 		if state.CurrentPiece == nil {
 			if !state.AddPiece() {
-				s.GameOver(*state)
 				state.Gameover = true
 			}
 			gameTicker.Reset(gamestate.DROP_SPEED)
@@ -25,8 +24,10 @@ func Loop(inputChan chan rune, s screen.Screen, state *gamestate.GameState) {
 			state.HandleInput(input)
 		case <-gameTicker.C:
 			state.HandleDrop()
-		case <-screenTicker.C:
-			s.Update(*state)
+		case <-connectionTicker.C:
+			// TODO: make this async and do it for every state update
+			stateString, _ := json.Marshal(state)
+			gs.Player1Connection.WriteMessage(websocket.TextMessage, stateString)
 		}
 	}
 }

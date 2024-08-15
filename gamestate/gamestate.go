@@ -15,8 +15,8 @@ const SCREEN_REFRESH_RATE time.Duration = 50 * time.Millisecond
 type GameState struct {
 	Gameover     bool
 	GameExit     bool
-	CurrentPiece pieces.Piece
-	NextPiece    pieces.Piece
+	CurrentPiece *pieces.SerializablePiece
+	NextPiece    *pieces.SerializablePiece
 	Rubble       component.Rubble
 }
 

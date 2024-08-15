@@ -3,13 +3,12 @@ package pieces
 import "tetris/component"
 
 type Box struct {
-	Type        int
-	X int
-	Y int
+	X    int
+	Y    int
 }
 
 func NewBox() *Box {
-	return &Box{BOX, 1, 5}
+	return &Box{1, 5}
 }
 
 func (c *Box) Position() (int, int) {

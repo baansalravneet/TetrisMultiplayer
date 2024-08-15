@@ -1,16 +1,23 @@
 package main
 
 import (
+	"fmt"
 	"tetris/gamestate"
-	"tetris/input"
 	"tetris/loop"
-	"tetris/screen"
+	"tetris/server"
 )
 
 func main() {
+	fmt.Println("Initializing game state...")
 	state := gamestate.Init()
-	s := screen.Start()
-	inputChan := input.Start(100)
-	defer input.Stop()
-	loop.Loop(inputChan, s, state)
+
+	fmt.Println("Initializing server...")
+	gs := server.New()
+	defer gs.Close()
+
+	fmt.Println("Initializing controls...")
+	clientInput := gs.GetInputChannel(100)
+
+	fmt.Println("Starting Game...")
+	loop.Loop(state, clientInput, gs)
 }

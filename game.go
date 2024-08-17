@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 	"tetris/gamestate"
 	"tetris/loop"
 	"tetris/server"
@@ -9,15 +10,28 @@ import (
 
 func main() {
 	fmt.Println("Initializing game state...")
-	state := gamestate.Init()
+	player1State := gamestate.Init()
+	player2State := gamestate.Init()
 
 	fmt.Println("Initializing server...")
 	gs := server.New()
-	defer gs.Close()
 
 	fmt.Println("Initializing controls...")
-	clientInput := gs.GetInputChannel(100)
+	player1Input := gs.GetPlayer1Input(100)
+	player2Input := gs.GetPlayer2Input(100)
 
 	fmt.Println("Starting Game...")
-	loop.Loop(state, clientInput, gs)
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go func() {
+		loop.Loop(player1State, player2State, player1Input, gs.Player1Connection)
+		wg.Done()
+	}()
+	go func() {
+		loop.Loop(player2State, player1State, player2Input, gs.Player2Connection)
+		wg.Done()
+	}()
+	wg.Wait()
+	fmt.Println("All games finished")
 }

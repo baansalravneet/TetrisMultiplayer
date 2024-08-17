@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"net/url"
+	"os"
 	"tetris/gamestate"
 	"tetris/input"
 	"tetris/screen"
@@ -13,9 +14,17 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var addr = flag.String("addr", "localhost:8080", "http service address")
+var playerAddress *string
 
 func main() {
+
+	player := os.Args[0]
+	if player == "1" {
+		playerAddress = flag.String("player1Address", "localhost:8080", "http service address")
+	} else {
+		playerAddress = flag.String("player2Address", "localhost:8081", "http service address")
+	}
+
 	screen := screen.Init()
 
 	c := connectToServer()
@@ -30,15 +39,15 @@ func main() {
 
 func clientLoop(screen screen.Screen, inputChan chan rune, c *websocket.Conn) {
 	screenTicker := time.NewTicker(gamestate.SCREEN_REFRESH_RATE)
-	state, err := getNewState(c)
+	state, opState, err := getNewState(c)
 	for err == nil {
 		select {
 		case <-screenTicker.C:
-			screen.Update(*state)
+			screen.Update(*state, *opState)
 		case input := <-inputChan:
 			sendInput(c, input)
 		default:
-			state, err = getNewState(c)
+			state, opState, err = getNewState(c)
 		}
 	}
 
@@ -49,19 +58,19 @@ func sendInput(c *websocket.Conn, input rune) {
 	c.WriteMessage(websocket.TextMessage, []byte(string(input)))
 }
 
-func getNewState(c *websocket.Conn) (*gamestate.GameState, error) {
-	var state *gamestate.GameState
+func getNewState(c *websocket.Conn) (*gamestate.GameState, *gamestate.GameState, error) {
+	var state []gamestate.GameState
 	_, message, err := c.ReadMessage()
 	if err != nil {
 		fmt.Println("Server sent an error", err)
-		return nil, err
+		return nil, nil, err
 	}
 	err = json.Unmarshal(message, &state)
-	return state, err
+	return &state[0], &state[1], err
 }
 
 func connectToServer() *websocket.Conn {
-	u := url.URL{Scheme: "ws", Host: *addr, Path: "/connect"}
+	u := url.URL{Scheme: "ws", Host: *playerAddress, Path: "/connect"}
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
 		fmt.Println("Error connecting to the server", err)

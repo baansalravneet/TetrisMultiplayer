@@ -9,8 +9,8 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var player1Address = flag.String("player1Address", "localhost:8080", "http service address")
-var player2Address = flag.String("player2Address", "localhost:8081", "http service address")
+var player1Address = flag.String("player1Address", "0.0.0.0:8080", "http service address")
+var player2Address = flag.String("player2Address", "0.0.0.0:8081", "http service address")
 
 type GameServer struct {
 	Player1Connection *websocket.Conn
